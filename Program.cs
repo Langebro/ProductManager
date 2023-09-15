@@ -1,4 +1,5 @@
 ﻿using ProductManager.Domain;
+using System.Reflection;
 
 namespace ProductManager;
 
@@ -52,11 +53,6 @@ internal class Program
         } while (applicationRunning);
 
 
-        }
-
-    private static void SearchProduct()
-    {
-        throw new NotImplementedException();
     }
 
     private static void AddProduct()
@@ -81,19 +77,79 @@ internal class Program
 
         string price = Console.ReadLine();
 
-        Console.Clear();
+        Console.WriteLine("Är detta korrekt? ");
+        Console.ReadLine();
 
-        var product = new Product()
+        var product = new Product
         {
             Name = name,
-            Description = description,
             SKU = sku,
+            Description = description,
             Picture = picture,
-            Price = price
+            Price = price,
 
         };
 
+        var keyPressed = Console.ReadKey(intercept: true);
+
+        if(keyPressed.Key == ConsoleKey.J)
+        {
+            SaveProduct(product);
+            Console.WriteLine("produkt sparad!");
+            Console.ReadLine();
+        }
+        else
+        {
+
+            Console.Clear();
+            AddProduct();
+        }
     }
 
+    private static void SaveProduct(Product product)
+    {
+        throw new NotImplementedException();
+    }
+
+    private static void SearchProduct()
+    {
+        Console.Write("SKU: ");
+
+        string SKU = Console.ReadLine();
+
+        Console.Clear();
+
+        var product = GetProduktBySKU(SKU);
+
+        if (product is not null)
+        {
+            Console.WriteLine($"Namn: {product.Name}");
+            Console.WriteLine($"description: {product.Description}");
+            Console.WriteLine($"SKU: {product.SKU}");
+            Console.WriteLine($"Bild: {product.Picture}");
+            Console.WriteLine($"Pris: {product.Price}");
+
+            WaitUntil(ConsoleKey.Escape);
+        }
+        else
+        {
+            Console.WriteLine("Produkt finns ej");
+
+            Thread.Sleep(2000);
+        }
+    }
+
+
+    private static Product GetProduktBySKU(string? sku)
+    {
+        throw new NotImplementedException();
+
+    }
+
+    private static void WaitUntil(ConsoleKey key)
+    {
+        while (Console.ReadKey(true).Key != key) ;
+
+    }
 
 }
