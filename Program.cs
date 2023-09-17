@@ -78,6 +78,8 @@ internal class Program
         string price = Console.ReadLine();
 
         Console.WriteLine("Är detta korrekt? ");
+        Console.WriteLine("Ja");
+        Console.WriteLine("Nej");
         Console.ReadLine();
 
         var product = new Product
@@ -90,25 +92,26 @@ internal class Program
 
         };
 
+
         var keyPressed = Console.ReadKey(intercept: true);
 
-        if(keyPressed.Key == ConsoleKey.J)
+        if (keyPressed.Key == ConsoleKey.J)
         {
             SaveProduct(product);
-            Console.WriteLine("produkt sparad!");
-            Console.ReadLine();
         }
-        else
+        else if (keyPressed.Key == ConsoleKey.N)
         {
 
             Console.Clear();
             AddProduct();
         }
+
     }
 
     private static void SaveProduct(Product product)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Produkt Sparad");
+        Console.ReadLine();
     }
 
     private static void SearchProduct()
