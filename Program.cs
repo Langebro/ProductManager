@@ -1,4 +1,5 @@
-﻿using ProductManager.Domain;
+﻿using ProductManager.Data;
+using ProductManager.Domain;
 using System.Reflection;
 
 namespace ProductManager;
@@ -58,29 +59,19 @@ internal class Program
     private static void AddProduct()
     {
         Console.Write("Namn: ");
-
-        string name = Console.ReadLine();
-
+        string? name = Console.ReadLine();
         Console.Write("SKU: ");
-
-        string sku = Console.ReadLine();
-
+        string? sku = Console.ReadLine();
         Console.Write("Beskrivning: ");
-
-        string description = Console.ReadLine();
-
+        string? description = Console.ReadLine();
         Console.Write("Bild: ");
-
         string picture = Console.ReadLine();
-
         Console.Write("Pris: ");
-
         string price = Console.ReadLine();
 
         Console.WriteLine("Är detta korrekt? ");
         Console.WriteLine("Ja");
         Console.WriteLine("Nej");
-        Console.ReadLine();
 
         var product = new Product
         {
@@ -98,6 +89,8 @@ internal class Program
         if (keyPressed.Key == ConsoleKey.J)
         {
             SaveProduct(product);
+            Console.WriteLine("Produkt Sparad");
+            Console.ReadLine();
         }
         else if (keyPressed.Key == ConsoleKey.N)
         {
@@ -110,16 +103,16 @@ internal class Program
 
     private static void SaveProduct(Product product)
     {
-        Console.WriteLine("Produkt Sparad");
-        Console.ReadLine();
+        using var context = new ApplicationDbContext();
+        context.Product.Add(product);
+        context.SaveChanges();
+
     }
 
     private static void SearchProduct()
     {
         Console.Write("SKU: ");
-
         string SKU = Console.ReadLine();
-
         Console.Clear();
 
         var product = GetProduktBySKU(SKU);
@@ -142,10 +135,21 @@ internal class Program
         }
     }
 
+    private static void DeleteProcut(Product product)
+    {
+        using var context = new ApplicationDbContext();
+        context.Product.Remove(product);
+    }
 
     private static Product GetProduktBySKU(string? sku)
     {
-        throw new NotImplementedException();
+        using var context = new ApplicationDbContext();
+
+        var product = context
+            .Product
+            .FirstOrDefault(product => product.SKU == sku);
+
+        return product;
 
     }
 

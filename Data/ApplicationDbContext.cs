@@ -5,9 +5,9 @@ using ProductManager.Domain;
 
 namespace ProductManager.Data
 {
-    internal class AppliciationDbContext : DbContext
+    internal class ApplicationDbContext : DbContext
     {
-        private string connectionString = "Server=.;Database=ProductManagwer;Integrated Security=true;Encrypt=False";
+        private string connectionString = "Server=.;Database=ProductManager;Integrated Security=true;Encrypt=False";
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
