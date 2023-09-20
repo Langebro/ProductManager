@@ -18,7 +18,7 @@ internal class Program
         do
         {
             Console.WriteLine("1. Ny produkt");
-            Console.WriteLine("3. Sök produkt");
+            Console.WriteLine("2. Sök produkt");
             Console.WriteLine("3. Avsluta");
 
             var keyPressed = Console.ReadKey(intercept: true);
@@ -70,8 +70,8 @@ internal class Program
         string price = Console.ReadLine();
 
         Console.WriteLine("Är detta korrekt? ");
-        Console.WriteLine("Ja");
-        Console.WriteLine("Nej");
+        Console.WriteLine("(J)a");
+        Console.WriteLine("(N)ej");
 
         var product = new Product
         {
@@ -117,6 +117,7 @@ internal class Program
 
         var product = GetProduktBySKU(SKU);
 
+
         if (product is not null)
         {
             Console.WriteLine($"Namn: {product.Name}");
@@ -124,8 +125,22 @@ internal class Program
             Console.WriteLine($"SKU: {product.SKU}");
             Console.WriteLine($"Bild: {product.Picture}");
             Console.WriteLine($"Pris: {product.Price}");
+            Console.WriteLine("(R)adera produkt?");
 
-            WaitUntil(ConsoleKey.Escape);
+
+            var keyPressed = Console.ReadKey(intercept: true);
+            if (keyPressed.Key == ConsoleKey.J)
+            {
+                DeleteProdcut(product);
+                Console.WriteLine("Produkt raderad");
+                Thread.Sleep(2000);
+            }
+            else if (keyPressed.Key == ConsoleKey.N)
+            {
+                return;
+            }
+
+            //WaitUntil(ConsoleKey.Escape);
         }
         else
         {
@@ -135,10 +150,11 @@ internal class Program
         }
     }
 
-    private static void DeleteProcut(Product product)
+    private static void DeleteProdcut(Product product)
     {
         using var context = new ApplicationDbContext();
         context.Product.Remove(product);
+        context.SaveChanges();
     }
 
     private static Product GetProduktBySKU(string? sku)
@@ -152,11 +168,4 @@ internal class Program
         return product;
 
     }
-
-    private static void WaitUntil(ConsoleKey key)
-    {
-        while (Console.ReadKey(true).Key != key) ;
-
-    }
-
 }
