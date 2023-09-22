@@ -122,23 +122,14 @@ internal class Program
 
         if (product is not null)
         {
-            
-            Console.WriteLine($"Namn: {product.Name}");
-            Console.WriteLine($"description: {product.Description}");
-            Console.WriteLine($"SKU: {product.SKU}");
-            Console.WriteLine($"Bild: {product.Picture}");
-            Console.WriteLine($"Pris: {product.Price}");
+            PrintProductInfo(product);
             Console.WriteLine("(R)adera produkt?");
 
             var keyPressed = Console.ReadKey(intercept: true);
             if (keyPressed.Key == ConsoleKey.R)
             {
                 Console.Clear();
-                Console.WriteLine($"Namn: {product.Name}");
-                Console.WriteLine($"description: {product.Description}");
-                Console.WriteLine($"SKU: {product.SKU}");
-                Console.WriteLine($"Bild: {product.Picture}");
-                Console.WriteLine($"Pris: {product.Price}");
+                PrintProductInfo(product);
                 Console.WriteLine("(J)a (N)ej");
 
             }
@@ -167,6 +158,15 @@ internal class Program
 
             Thread.Sleep(2000);
         }
+    }
+
+    private static void PrintProductInfo(Product product)
+    {
+        Console.WriteLine($"Namn: {product.Name}");
+        Console.WriteLine($"description: {product.Description}");
+        Console.WriteLine($"SKU: {product.SKU}");
+        Console.WriteLine($"Bild: {product.Picture}");
+        Console.WriteLine($"Pris: {product.Price}");
     }
 
     private static void DeleteProdcut(Product product)
