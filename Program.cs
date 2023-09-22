@@ -46,7 +46,7 @@ internal class Program
 
                     applicationRunning = false;
 
-                    return;
+                    break;
             }
 
             Console.Clear();
@@ -90,7 +90,9 @@ internal class Program
         {
             SaveProduct(product);
             Console.WriteLine("Produkt Sparad");
-            Console.ReadLine();
+            Thread.Sleep(2000);
+            return;
+
         }
         else if (keyPressed.Key == ConsoleKey.N)
         {
@@ -120,6 +122,7 @@ internal class Program
 
         if (product is not null)
         {
+            
             Console.WriteLine($"Namn: {product.Name}");
             Console.WriteLine($"description: {product.Description}");
             Console.WriteLine($"SKU: {product.SKU}");
@@ -127,9 +130,26 @@ internal class Program
             Console.WriteLine($"Pris: {product.Price}");
             Console.WriteLine("(R)adera produkt?");
 
-
             var keyPressed = Console.ReadKey(intercept: true);
-            if (keyPressed.Key == ConsoleKey.J)
+            if (keyPressed.Key == ConsoleKey.R)
+            {
+                Console.Clear();
+                Console.WriteLine($"Namn: {product.Name}");
+                Console.WriteLine($"description: {product.Description}");
+                Console.WriteLine($"SKU: {product.SKU}");
+                Console.WriteLine($"Bild: {product.Picture}");
+                Console.WriteLine($"Pris: {product.Price}");
+                Console.WriteLine("(J)a (N)ej");
+
+            }
+
+            else if (keyPressed.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
+
+            var confirmationKey = Console.ReadKey(intercept: true);
+            if (confirmationKey.Key == ConsoleKey.J)
             {
                 DeleteProdcut(product);
                 Console.WriteLine("Produkt raderad");
@@ -140,7 +160,6 @@ internal class Program
                 return;
             }
 
-            //WaitUntil(ConsoleKey.Escape);
         }
         else
         {
