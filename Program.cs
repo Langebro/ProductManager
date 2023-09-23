@@ -123,7 +123,7 @@ internal class Program
         if (product is not null)
         {
             PrintProductInfo(product);
-            Console.WriteLine("(R)adera produkt?");
+            Console.WriteLine("(R)adera (U)ppdatera");
 
             var keyPressed = Console.ReadKey(intercept: true);
             if (keyPressed.Key == ConsoleKey.R)
@@ -132,22 +132,29 @@ internal class Program
                 PrintProductInfo(product);
                 Console.WriteLine("(J)a (N)ej");
 
+                var confirmationKey = Console.ReadKey(intercept: true);
+                
+                if (confirmationKey.Key == ConsoleKey.J)
+                {
+                    DeleteProdcut(product);
+                    Console.Clear();
+                    Console.WriteLine("Produkt raderad");
+                    Thread.Sleep(2000);
+                }
+
+                else if (confirmationKey.Key == ConsoleKey.N)
+                {
+                    return;
+                }
+
+            }
+
+            if (keyPressed.Key == ConsoleKey.U)
+            {
+                UpdateProduct(product);
             }
 
             else if (keyPressed.Key == ConsoleKey.Escape)
-            {
-                return;
-            }
-
-            var confirmationKey = Console.ReadKey(intercept: true);
-            if (confirmationKey.Key == ConsoleKey.J)
-            {
-                DeleteProdcut(product);
-                Console.Clear();
-                Console.WriteLine("Produkt raderad");
-                Thread.Sleep(2000);
-            }
-            else if (keyPressed.Key == ConsoleKey.N)
             {
                 return;
             }
@@ -186,6 +193,43 @@ internal class Program
             .FirstOrDefault(product => product.SKU == sku);
 
         return product;
+
+    }
+
+
+    private static void UpdateProduct(Product product)
+    {
+        Console.Clear();
+        using var context = new ApplicationDbContext();
+        context.Product.Attach(product);
+
+        Console.Write("Namn: ");
+        product.Name = Console.ReadLine();
+        Console.WriteLine($"SKU: {product.SKU}");
+        Console.Write("Beskrivning: ");
+        product.Description = Console.ReadLine();
+        Console.Write("Bild: ");
+        product.Picture = Console.ReadLine();
+        Console.Write("Pris: ");
+        product.Price = Console.ReadLine();
+
+        
+
+        Console.WriteLine("Är detta korrekt? (J)a (N)ej");
+
+
+        var keyPressed = Console.ReadKey(intercept: true);
+        if (keyPressed.Key == ConsoleKey.J)
+        {
+            context.SaveChanges();
+            Console.WriteLine("Produkt Sparad");
+            Thread.Sleep(2000);
+        }
+        else if (keyPressed.Key == ConsoleKey.N)
+        {
+            return;
+        }
+
 
     }
 }
