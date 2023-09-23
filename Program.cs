@@ -143,6 +143,7 @@ internal class Program
             if (confirmationKey.Key == ConsoleKey.J)
             {
                 DeleteProdcut(product);
+                Console.Clear();
                 Console.WriteLine("Produkt raderad");
                 Thread.Sleep(2000);
             }
