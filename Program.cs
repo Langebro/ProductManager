@@ -1,5 +1,6 @@
 ﻿using ProductManager.Data;
 using ProductManager.Domain;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace ProductManager;
@@ -19,7 +20,8 @@ internal class Program
         {
             Console.WriteLine("1. Ny produkt");
             Console.WriteLine("2. Sök produkt");
-            Console.WriteLine("3. Avsluta");
+            Console.WriteLine("3. Lägg till kategori");
+            Console.WriteLine("4. Avsluta");
 
             var keyPressed = Console.ReadKey(intercept: true);
 
@@ -43,6 +45,13 @@ internal class Program
 
                 case ConsoleKey.D3:
                 case ConsoleKey.NumPad3:
+
+                    AddCategory();
+
+                    break;
+
+                case ConsoleKey.D4:
+                case ConsoleKey.NumPad4:
 
                     applicationRunning = false;
 
@@ -166,6 +175,47 @@ internal class Program
 
             Thread.Sleep(2000);
         }
+    }
+
+    public static void AddCategory()
+    {
+        Console.Write("Namn: ");
+        string name = Console.ReadLine();
+
+        Console.WriteLine("Är detta korrekt? ");
+        Console.WriteLine("(J)a");
+        Console.WriteLine("(N)ej");
+
+        var category = new Category
+        {
+            Name = name,
+        };
+
+        var keyPressed = Console.ReadKey(intercept: true);
+
+        if (keyPressed.Key == ConsoleKey.J)
+        {
+            SaveCategory(category);
+            Console.WriteLine("Kategori tillagd");
+            Thread.Sleep(2000);
+            return;
+
+        }
+        else if (keyPressed.Key == ConsoleKey.N)
+        {
+
+            Console.Clear();
+            AddCategory();
+        }
+
+
+    }
+
+    private static void SaveCategory(Category category)
+    {
+        using var context = new ApplicationDbContext();
+        context.Category.Add(category);
+        context.SaveChanges();
     }
 
     private static void PrintProductInfo(Product product)
