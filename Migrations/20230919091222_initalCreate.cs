@@ -2,6 +2,14 @@
 
 #nullable disable
 
+/*
+ CREATE TABLE Product (
+  ID INT IDENTITY,
+ * 
+ * 
+ * 
+ */
+
 namespace ProductManager.Migrations
 {
     /// <inheritdoc />

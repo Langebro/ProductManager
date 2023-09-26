@@ -1,6 +1,9 @@
-﻿using ProductManager.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductManager.Data;
 using ProductManager.Domain;
+using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace ProductManager;
@@ -21,7 +24,9 @@ internal class Program
             Console.WriteLine("1. Ny produkt");
             Console.WriteLine("2. Sök produkt");
             Console.WriteLine("3. Lägg till kategori");
-            Console.WriteLine("4. Avsluta");
+            Console.WriteLine("4. Lägg till produkt till kategori");
+            Console.WriteLine("5. Lista kategorier");
+            Console.WriteLine("6. Avsluta");
 
             var keyPressed = Console.ReadKey(intercept: true);
 
@@ -53,6 +58,20 @@ internal class Program
                 case ConsoleKey.D4:
                 case ConsoleKey.NumPad4:
 
+                    AddProductToCat();
+
+                    break;
+
+                case ConsoleKey.D5:
+                case ConsoleKey.NumPad5:
+
+                    ListCat();
+
+                    break;
+
+                case ConsoleKey.D6:
+                case ConsoleKey.NumPad6:
+
                     applicationRunning = false;
 
                     break;
@@ -64,6 +83,7 @@ internal class Program
 
 
     }
+
 
     private static void AddProduct()
     {
@@ -98,6 +118,7 @@ internal class Program
         if (keyPressed.Key == ConsoleKey.J)
         {
             SaveProduct(product);
+            Console.Clear();
             Console.WriteLine("Produkt Sparad");
             Thread.Sleep(2000);
             return;
@@ -119,6 +140,7 @@ internal class Program
         context.SaveChanges();
 
     }
+
 
     private static void SearchProduct()
     {
@@ -211,12 +233,121 @@ internal class Program
 
     }
 
+    public static void AddProductToCat()
+    {
+        Console.Write("SKU: ");
+        string SKU = Console.ReadLine();
+        Console.Clear();
+
+        var product = GetProduktBySKU(SKU);
+
+
+
+        if (product is not null)
+        {
+            Console.WriteLine($"SKU: {product.SKU}");
+            Console.WriteLine($"Namn: {product.Name}");
+            Console.WriteLine("Ange kategori: ");
+            string name = Console.ReadLine();
+
+            var category = GetCategoryByName(name);
+
+            using var context = new ApplicationDbContext();
+
+            try
+            {
+                if (category is not null)
+                {
+                    ProductCategory existingProduct = PreventDoublesInCat(category.Id, product.Id);
+                    if (existingProduct is null)
+                    {
+                        var productCategory = new ProductCategory
+                        {
+                            CategoryId = category.Id,
+                            ProductId = product.Id
+                        };
+                        context.ProductCategories.Add(productCategory);
+
+                        context.SaveChanges();
+
+                        Console.Clear();
+                        Console.WriteLine("produkt tillagd");
+                        Thread.Sleep(2000);
+                    }
+
+                    else
+                    {
+                        Console.Write("produkkt finns redan i kategori");
+                        Thread.Sleep(2000);
+                    }
+
+                }
+            }
+
+            catch (Exception ex) 
+            {
+                Console.WriteLine("Produkt finns redan tillagd" + ex.Message);
+                Thread.Sleep(2000);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Produkt finns inte");
+        }
+    }
+  
+    
+
+    private static void ListCat()
+    {
+
+        var categories = GetCategories();
+
+        Console.WriteLine("Namn på kategori:");
+        Console.WriteLine("-----------------------------------------------------------");
+        foreach (var category in categories)
+        {
+            var productsInCategory = GetProductsInCategory(category);
+            Console.WriteLine($"{category.Name} ({productsInCategory.Count()})");
+            foreach (var product in productsInCategory)
+            {
+                Console.WriteLine(  $"{product.Name}     {product.Price}");
+                
+            }
+        }
+
+        Thread.Sleep(5000);
+    }
+
+    private static IEnumerable<Product> GetProductsInCategory(Category category)
+    {
+        using var context = new ApplicationDbContext();
+
+        var productsInCategory = context.ProductCategories
+            .Where(pc => pc.CategoryId == category.Id)
+            .Select(pc => pc.Product)
+            .ToList();
+
+        return productsInCategory;
+    }
+
+    private static IEnumerable<Category> GetCategories()
+    {
+        using var context = new ApplicationDbContext();
+
+        var categories = context.Category.ToList();
+
+        return categories;
+    }
+
+  
     private static void SaveCategory(Category category)
     {
         using var context = new ApplicationDbContext();
         context.Category.Add(category);
         context.SaveChanges();
     }
+
 
     private static void PrintProductInfo(Product product)
     {
@@ -243,6 +374,28 @@ internal class Program
             .FirstOrDefault(product => product.SKU == sku);
 
         return product;
+
+    }
+
+    private static ProductCategory PreventDoublesInCat(int categoryId, int productId)
+    {
+
+        using var context = new ApplicationDbContext();
+        var existingProduct = context.ProductCategories
+            .FirstOrDefault(pc => pc.CategoryId == categoryId && pc.ProductId == productId);
+
+        return existingProduct;
+    }
+
+    private static Category GetCategoryByName(string? name)
+    {
+        using var context = new ApplicationDbContext();
+
+        var category = context
+            .Category
+            .FirstOrDefault(category => category.Name == name);
+
+        return category;
 
     }
 

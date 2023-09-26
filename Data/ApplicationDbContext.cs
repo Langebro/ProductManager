@@ -19,5 +19,7 @@ namespace ProductManager.Data
 
         public DbSet<Product> Product { get; set; }
         public DbSet<Category> Category { get; set; }   
+
+        public DbSet<ProductCategory> ProductCategories { get; set; }
     }
 }

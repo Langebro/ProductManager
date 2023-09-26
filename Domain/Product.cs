@@ -36,7 +36,10 @@ namespace ProductManager.Domain
             }
         }
         [Column(TypeName = "nchar(20)")]
-        public required string Price { get; set; } 
+        public required string Price { get; set; }
+
+        public ICollection<Category> Categoies { get; set; } = new List<Category>();
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
     }
 }
