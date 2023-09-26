@@ -150,7 +150,6 @@ internal class Program
 
         var product = GetProduktBySKU(SKU);
 
-
         if (product is not null)
         {
             PrintProductInfo(product);
@@ -241,8 +240,6 @@ internal class Program
 
         var product = GetProduktBySKU(SKU);
 
-
-
         if (product is not null)
         {
             Console.WriteLine($"SKU: {product.SKU}");
@@ -259,8 +256,11 @@ internal class Program
                 if (category is not null)
                 {
                     ProductCategory existingProduct = PreventDoublesInCat(category.Id, product.Id);
-                    if (existingProduct is null)
+
+                    if(existingProduct is not null)
                     {
+                        throw new Exception("Produkt redan tillagd!");
+                    }
                         var productCategory = new ProductCategory
                         {
                             CategoryId = category.Id,
@@ -273,14 +273,6 @@ internal class Program
                         Console.Clear();
                         Console.WriteLine("produkt tillagd");
                         Thread.Sleep(2000);
-                    }
-
-                    else
-                    {
-                        Console.Write("produkkt finns redan i kategori");
-                        Thread.Sleep(2000);
-                    }
-
                 }
             }
 
@@ -311,7 +303,7 @@ internal class Program
             Console.WriteLine($"{category.Name} ({productsInCategory.Count()})");
             foreach (var product in productsInCategory)
             {
-                Console.WriteLine(  $"{product.Name}     {product.Price}");
+                Console.WriteLine($"\t{product.Name}\t\t{product.Price} SEK");
                 
             }
         }
