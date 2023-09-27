@@ -76,14 +76,10 @@ internal class Program
 
                     break;
             }
-
             Console.Clear();
 
         } while (applicationRunning);
-
-
     }
-
 
     private static void AddProduct()
     {
@@ -126,11 +122,9 @@ internal class Program
         }
         else if (keyPressed.Key == ConsoleKey.N)
         {
-
             Console.Clear();
             AddProduct();
         }
-
     }
 
     private static void SaveProduct(Product product)
@@ -188,7 +182,6 @@ internal class Program
             {
                 return;
             }
-
         }
         else
         {
@@ -220,15 +213,12 @@ internal class Program
             Console.WriteLine("Kategori tillagd");
             Thread.Sleep(2000);
             return;
-
         }
         else if (keyPressed.Key == ConsoleKey.N)
         {
-
             Console.Clear();
             AddCategory();
         }
-
 
     }
 
@@ -257,7 +247,7 @@ internal class Program
                 {
                     ProductCategory existingProduct = PreventDoublesInCat(category.Id, product.Id);
 
-                    if(existingProduct is not null)
+                    if (existingProduct is not null)
                     {
                         throw new Exception("Produkt redan tillagd!");
                     }
@@ -271,14 +261,14 @@ internal class Program
                         context.SaveChanges();
 
                         Console.Clear();
-                        Console.WriteLine("produkt tillagd");
+                        Console.WriteLine("Produkt tillagd");
                         Thread.Sleep(2000);
                 }
             }
 
             catch (Exception ex) 
             {
-                Console.WriteLine("Produkt finns redan tillagd" + ex.Message);
+                Console.WriteLine(ex.Message);
                 Thread.Sleep(2000);
             }
         }
@@ -287,8 +277,6 @@ internal class Program
             Console.WriteLine("Produkt finns inte");
         }
     }
-  
-    
 
     private static void ListCat()
     {
@@ -378,7 +366,6 @@ internal class Program
 
         return existingProduct;
     }
-
     private static Category GetCategoryByName(string? name)
     {
         using var context = new ApplicationDbContext();
@@ -390,7 +377,6 @@ internal class Program
         return category;
 
     }
-
 
     private static void UpdateProduct(Product product)
     {
@@ -408,10 +394,7 @@ internal class Program
         Console.Write("Pris: ");
         product.Price = Console.ReadLine();
 
-        
-
         Console.WriteLine("Är detta korrekt? (J)a (N)ej");
-
 
         var keyPressed = Console.ReadKey(intercept: true);
         if (keyPressed.Key == ConsoleKey.J)
@@ -424,7 +407,5 @@ internal class Program
         {
             return;
         }
-
-
     }
 }
